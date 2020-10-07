@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -21,4 +22,6 @@ func NewMySQLClient() *MySqlClient {
 	if err != nil {
 
 	}
+
+	return &MySqlClient{db}
 }

@@ -10,7 +10,6 @@ CREATE TABLE movies.movie
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE movies.`user`
@@ -23,7 +22,6 @@ CREATE TABLE movies.`user`
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE movies.wish_list
@@ -37,4 +35,3 @@ CREATE TABLE movies.wish_list
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
