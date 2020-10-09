@@ -2,7 +2,7 @@
 
 > #### Contenido!
 >
-> - Framework: fiber 1.14.6.
+> - Framework: [fiber 1.14.6](https://docs.gofiber.io/v/1.x/).
 > - DB: MySQL.
 > - Autentificacion: JWT.
 
