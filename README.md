@@ -2,7 +2,7 @@
 
 > #### Contenido!
 >
-> - Framework: fiber.
+> - Framework: fiber 1.14.6.
 > - DB: MySQL.
 > - Autentificacion: JWT.
 
