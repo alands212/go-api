@@ -1,19 +1,22 @@
 package api
 
-import	"github.com/alands212/go-api/internal/database"
-import	"github.com/alands212/go-api/internal/logs"
-import  "github.com/gofiber/utils"
+import (
+	"github.com/alands212/go-api/internal/database"
+	"github.com/alands212/go-api/internal/logs"
+	"github.com/gofiber/utils"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type CreateUserCMD struct {
-	Username		string `json:"username"`
-	Password 		string `json:"password"`
-	RepeatPassword 	string `json:"repeat_password"`
+	Username       string `json:"username"`
+	Password       string `json:"password"`
+	RepeatPassword string `json:"repeat_password"`
 }
 
 type UserSummary struct {
-	ID			string `json:"id"`
-	Username	string `json:"username"`
-	JWT			string `json:"token"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	JWT      string `json:"token"`
 }
 
 type UserGateway interface {
@@ -28,9 +31,20 @@ type UserService struct {
 
 func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
 
-	id :=  utils.UUID()
+	id := utils.UUID()
 
-	_, err := us.Exec(CreateUserQuery(), id, cmd.Username, cmd.Password)
+	/* encriptar contraseña */
+
+	/* contraseña sin encriptar */
+	contrasenaPlana := cmd.Password
+
+	contrasenaPlanaComoByte := []byte(contrasenaPlana)
+	hash, _ := bcrypt.GenerateFromPassword(contrasenaPlanaComoByte, bcrypt.DefaultCost) //DefaultCost es 10
+
+	/* contraseña encriptada */
+	password := string(hash)
+
+	_, err := us.Exec(CreateUserQuery(), id, cmd.Username, password)
 
 	if err != nil {
 
@@ -38,22 +52,38 @@ func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
 
 		return nil, err
 	}
-	
+
 	return &UserSummary{
-		ID:			id,
-		Username:	cmd.Username,
-		JWT:		"",
+		ID:       id,
+		Username: cmd.Username,
+		JWT:      "",
 	}, nil
 }
 
 func (us *UserService) Login(cmd LoginCMD) string {
 	var id string
-	err :=	us.QueryRow(GetLoginQuery(), cmd.Username, cmd.Password).Scan(&id)
+	var password string
+
+	err := us.QueryRow(GetLoginQuery(), cmd.Username).Scan(&id, &password)
 
 	if err != nil {
 
 		logs.Error(err.Error())
 
+		return ""
+	}
+
+	/* comparar contraseña */
+
+	hash := password
+	hashComoByte := []byte(hash)
+
+	contraseña := cmd.Password
+	contraseñaComoByte := []byte(contraseña)
+
+	error := bcrypt.CompareHashAndPassword(hashComoByte, contraseñaComoByte)
+	if error != nil {
+		logs.Error("Contraseña incorrecta")
 		return ""
 	}
 
@@ -67,6 +97,6 @@ func (us *UserService) AddWishMovie(userID, movieID, comment string) error {
 		return err
 	}
 
-	return	nil
+	return nil
 
 }

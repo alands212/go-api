@@ -61,7 +61,7 @@ func CreateUserQuery() string {
 }
 
 func GetLoginQuery() string {
-	return "select id from user where username = ? and password = ?"
+	return "select id, password from user where username = ?"
 }
 
 func GetAddWishMovieQuery() string {
