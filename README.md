@@ -19,3 +19,7 @@
 - [Métodos](https://www.youtube.com/watch?v=quA5nX8mceY).
 - [Interfaces](https://www.youtube.com/watch?v=OeCtHLvf-Eo).
 - [Goroutines](https://www.youtube.com/watch?v=rF3VP10S9SM).
+
+
+### Hashear contraseña en Go
+- [bcrypt](https://parzibyte.me/blog/2018/05/31/hasheando-comprobando-contrasenas-golang/).
