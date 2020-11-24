@@ -88,7 +88,7 @@
 > }
 >
 > - Rerturn:
->
+>```json
 > {
 >
 >    "id": "7149849b-9743-40bc-afa2-15338e70e892",
@@ -98,6 +98,7 @@
 >   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiZW1haWwiOiJtYXJ0aW4uZHMuMjEyQGdtYWlsLmNvbSIsImV4cCI6MTYwNjQ4MDY0Niwic3ViIjoiNzE0OTg0OWItOTc0My00MGJjLWFmYTItMTUzMzhlNzBlODkyIiwidXNlcm5hbWUiOiJOb21icmV1c3VhcmlvIn0.cQ6OpjSEP56Jq8TxZJFD9FWARHim_EVxMVFyx7REZBo"
 >
 > }
+>```
 >
 
 #### Movies
@@ -148,7 +149,7 @@
 
 
 
-#### Token
+#### Token contenido
 
 >
 >	claims["admin"] = true
