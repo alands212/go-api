@@ -151,11 +151,13 @@
 #### Token
 
 >
->
 >	claims["admin"] = true
->	claims["username"] = user
->	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
->	claims["sub"] = id
->	claims["email"] = "martin.ds.212@gmail.com"
 >
+>	claims["username"] = user
+>
+>	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+>
+>	claims["sub"] = id
+>
+>	claims["email"] = "martin.ds.212@gmail.com"
 >
