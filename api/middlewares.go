@@ -1,11 +1,12 @@
 package api
 
 import (
+	"time"
+
+	"github.com/alands212/go-api/internal/logs"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
 	jwtware "github.com/gofiber/jwt"
-	"github.com/alands212/go-api/internal/logs"
-	"time"
 )
 
 func jwtMiddleware(secret string) func(*fiber.Ctx) {
@@ -14,7 +15,7 @@ func jwtMiddleware(secret string) func(*fiber.Ctx) {
 	})
 }
 
-func signToken(tokenKey, id string) string {
+func signToken(tokenKey, id, user string) string {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -22,8 +23,10 @@ func signToken(tokenKey, id string) string {
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["admin"] = true
+	claims["username"] = user
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	claims["sub"] = id
+	claims["email"] = "martin.ds.212@gmail.com"
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(tokenKey))

@@ -18,6 +18,6 @@ func main() {
 	api.SetupMoviesRoutes(app, key)
 	api.SetupUsersRoutes(app, key)
 
-	_ = app.Listen("3001")
+	_ = app.Listen("3993")
 
 }

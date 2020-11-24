@@ -18,7 +18,7 @@ func (w *WebServices) CreateUserHandler(c *fiber.Ctx) {
 		return
 	}
 	
-	res.JWT = signToken(w.tokenKey, res.ID )
+	res.JWT = signToken(w.tokenKey, res.ID, res.Username)
 
 	_ = c.JSON(res)
 }
@@ -71,7 +71,7 @@ func (w *WebServices) LoginHandler(c *fiber.Ctx) {
 		return
 	}
 
-	id := w.users.Login(cmd)
+	id, username := w.users.Login(cmd)
 
 	if id == "" {
 		err = fiber.NewError(404, "user not found")
@@ -82,7 +82,7 @@ func (w *WebServices) LoginHandler(c *fiber.Ctx) {
 	_ = c.JSON(struct {
 		Token string `json:"token"`
 	}{
-		Token: signToken(w.tokenKey, id),
+		Token: signToken(w.tokenKey, id, username),
 	})
 }
 

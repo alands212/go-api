@@ -21,7 +21,7 @@ type UserSummary struct {
 
 type UserGateway interface {
 	SaveUser(cmd CreateUserCMD) (*UserSummary, error)
-	Login(cmd LoginCMD) string
+	Login(cmd LoginCMD) (string, string)
 	AddWishMovie(userID, movieID, comment string) error
 }
 
@@ -60,17 +60,18 @@ func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
 	}, nil
 }
 
-func (us *UserService) Login(cmd LoginCMD) string {
+func (us *UserService) Login(cmd LoginCMD) (string, string) {
 	var id string
+	var username string
 	var password string
 
-	err := us.QueryRow(GetLoginQuery(), cmd.Username).Scan(&id, &password)
+	err := us.QueryRow(GetLoginQuery(), cmd.Username).Scan(&id, &username, &password)
 
 	if err != nil {
 
 		logs.Error(err.Error())
 
-		return ""
+		return "", ""
 	}
 
 	/* comparar contraseña */
@@ -84,10 +85,10 @@ func (us *UserService) Login(cmd LoginCMD) string {
 	error := bcrypt.CompareHashAndPassword(hashComoByte, contraseñaComoByte)
 	if error != nil {
 		logs.Error("Contraseña incorrecta")
-		return ""
+		return "", ""
 	}
 
-	return id
+	return id, username
 }
 
 func (us *UserService) AddWishMovie(userID, movieID, comment string) error {
