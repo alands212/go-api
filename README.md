@@ -103,7 +103,7 @@
 >
 > - Headers:
 >
->   **Key**: Authorization  **Value**: Bearer {token-del-usuario}
+>   **Key**: Authorization  **Value**: Bearer token-del-usuario
 >
 >   **Key**: Content-Type  **Value**: application/json
 >
