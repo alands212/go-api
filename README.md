@@ -99,11 +99,11 @@
 >
 > - POST
 >
-> - Url: /users/login
+> - Url: /users/permisos
 >
 > - Headers:
 >
->   **Key**: Authorization  **Value**: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDY2NTUwNjUsImlkIjoiMSJ9.lIXRoxQGpywGeyp7r98aSrjPIGmQ22utaH2-aeK9X0o
+>   **Key**: Authorization  **Value**: Bearer {token-del-usuario}
 >
 >   **Key**: Content-Type  **Value**: application/json
 >
