@@ -11,7 +11,7 @@
 - [Parte II - MySQL y centralizar el manejo de errores](https://www.youtube.com/watch?v=hhpR825EXAY).
 - [Parte III - Autenticación con JWT](https://www.youtube.com/watch?v=LXr1RJaaGhA).
 - [Parte IV - Autenticacion del cliente y validacion JWT con Fiber](https://www.youtube.com/watch?v=3Uscn6CNEVU).
-
+- [Extra - Fiber v2](https://www.youtube.com/watch?v=GW-vQpecS2M)
 
 #### Conceptos - codigofacilito
 - [Punteros](https://www.youtube.com/watch?v=V0cdxZCEzHE).
