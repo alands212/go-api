@@ -37,7 +37,7 @@
 >
 > - Headers:
 >
->   Key: Content-Type  Value: application/json
+>   **Key**: Content-Type  **Value**: application/json
 >
 > - Body:
 >
@@ -72,7 +72,7 @@
 >
 > - Headers:
 >
->   Key: Content-Type  Value: application/json
+>   **Key**: Content-Type  **Value**: application/json
 >
 > - Body:
 >
@@ -103,9 +103,9 @@
 >
 > - Headers:
 >
->   Key: Authorization  Value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDY2NTUwNjUsImlkIjoiMSJ9.lIXRoxQGpywGeyp7r98aSrjPIGmQ22utaH2-aeK9X0o
+>   **Key**: Authorization  **Value**: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDY2NTUwNjUsImlkIjoiMSJ9.lIXRoxQGpywGeyp7r98aSrjPIGmQ22utaH2-aeK9X0o
 >
->   Key: Content-Type  Value: application/json
+>   **Key**: Content-Type  **Value**: application/json
 >
 > - Body:
 >
