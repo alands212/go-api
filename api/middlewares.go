@@ -5,11 +5,11 @@ import (
 
 	"github.com/alands212/go-api/internal/logs"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gofiber/fiber"
-	jwtware "github.com/gofiber/jwt"
+	"github.com/gofiber/fiber/v2"
+	jwtware "github.com/gofiber/jwt/v2"
 )
 
-func jwtMiddleware(secret string) func(*fiber.Ctx) {
+func jwtMiddleware(secret string) fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey: []byte(secret),
 	})
@@ -22,7 +22,7 @@ func signToken(tokenKey, id string) string {
 
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	claims["id"] = id
 
 	// Generate encoded token and send it as response.

@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (w *WebServices) CreateUserHandler(c *fiber.Ctx) {
+func (w *WebServices) CreateUserHandler(c *fiber.Ctx) error {
 
 	var cmd CreateUserCMD
 
@@ -13,27 +13,24 @@ func (w *WebServices) CreateUserHandler(c *fiber.Ctx) {
 	res, err := w.Services.users.SaveUser(cmd)
 
 	if err != nil {
-		err = fiber.NewError(400, "cannot create user")
-		c.Next(err)
-		return
+		return fiber.NewError(400, "cannot create user")
 	}
 	t := signToken(w.tokenKey, res.ID)
 
 	savetoken := w.Services.users.Savetoken(t, res.UserSistema)
 
 	if savetoken != nil {
-		err = fiber.NewError(404, "user not found")
-		c.Next(err)
-		return
+		return fiber.NewError(404, "user not found")
 	}
-	_ = c.JSON(struct {
+
+	return c.JSON(struct {
 		Token string `json:"token"`
 	}{
 		Token: t,
 	})
 }
 
-func (w *WebServices) PermisoHandler(c *fiber.Ctx) {
+func (w *WebServices) PermisoHandler(c *fiber.Ctx) error {
 
 	var cmd GetPermisoCMD
 
@@ -45,31 +42,27 @@ func (w *WebServices) PermisoHandler(c *fiber.Ctx) {
 
 	msg := w.users.GetPermiso(userID, cmd.SistemaId, cmd.PermisoSlug)
 
-	_ = c.JSON(struct {
+	return c.JSON(struct {
 		R string `json:"acceso"`
 	}{
 		R: msg,
 	})
 }
 
-func (w *WebServices) LoginHandler(c *fiber.Ctx) {
+func (w *WebServices) LoginHandler(c *fiber.Ctx) error {
 
 	var cmd LoginCMD
 
 	err := c.BodyParser(&cmd)
 
 	if err != nil {
-		err = fiber.NewError(400, "cannot parse params")
-		c.Next(err)
-		return
+		return fiber.NewError(400, "cannot parse params")
 	}
 
 	id, usersistema := w.users.Login(cmd)
 
 	if id == "" {
-		err = fiber.NewError(404, "user not found")
-		c.Next(err)
-		return
+		return fiber.NewError(404, "user not found")
 	}
 
 	t := signToken(w.tokenKey, id)
@@ -77,11 +70,10 @@ func (w *WebServices) LoginHandler(c *fiber.Ctx) {
 	savetoken := w.users.Savetoken(t, usersistema)
 
 	if savetoken != nil {
-		err = fiber.NewError(404, "user not found")
-		c.Next(err)
-		return
+		return fiber.NewError(404, "user not found")
 	}
-	_ = c.JSON(struct {
+
+	return c.JSON(struct {
 		Token string `json:"token"`
 	}{
 		Token: t,
