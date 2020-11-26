@@ -15,18 +15,15 @@ func jwtMiddleware(secret string) func(*fiber.Ctx) {
 	})
 }
 
-func signToken(tokenKey, id, user string) string {
+func signToken(tokenKey, id string) string {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
-	claims["admin"] = true
-	claims["username"] = user
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	claims["sub"] = id
-	claims["email"] = "martin.ds.212@gmail.com"
+	claims["id"] = id
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(tokenKey))
@@ -44,7 +41,7 @@ func extractUserIDFromJWT(bearer, tokenKey string) string {
 	token := bearer[7:]
 	logs.Info(token)
 	t, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		return []byte(tokenKey), nil	
+		return []byte(tokenKey), nil
 	})
 
 	if err != nil {
@@ -53,7 +50,7 @@ func extractUserIDFromJWT(bearer, tokenKey string) string {
 
 	if t.Valid {
 		claims := t.Claims.(jwt.MapClaims)
-		return claims["sub"].(string)
+		return claims["id"].(string)
 	}
 
 	return ""

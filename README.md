@@ -37,26 +37,28 @@
 >
 > - Headers:
 >
->   Key: Content-Type 
->
->   Value: application/json
+>   Key: Content-Type  Value: application/json
 >
 > - Body:
 >
 >```json
 > {
->	"username": "UsuarioNuevo",
->	"password": "contrasena123"
+>	"user": "facundo11",
+>	"apellido": "Rios",
+>	"nombre": "Facundo",
+>	"cuit": "20213243129",
+>	"dni": "21324312",
+>	"nrotramitedni": "1231152224312456789",
+>	"password": "contrasena123",
+>	"sistema_id": "1"
 > }
 >```
 >
-> - Rerturn:
+> - Rerturn: token
 >
 >```json
 > {
->   "id": "7149849b-9743-40bc-afa2-15338e70e892",
->   "username": "Nombreusuario",
->   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiZW1haWwiOiJtYXJ0aW4uZHMuMjEyQGdtYWlsLmNvbSIsImV4cCI6MTYwNjQ4MDQ2MCwic3ViIjoiNzE0OTg0OWItOTc0My00MGJjLWFmYTItMTUzMzhlNzBlODkyIiwidXNlcm5hbWUiOiJOb21icmV1c3VhcmlvIn0.vmHiN1HeLcCWuOygeLLqatL1RediaKQxZOUd7gA7FOI"
+>    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDY2NTQ3NzUsImlkIjoiNiJ9.BJmXeGbZtikI2JtXst6s1ogP6L-y4n9Mi79SwdsHtHI"
 > }
 >```
 >
@@ -70,70 +72,62 @@
 >
 > - Headers:
 >
->   Key: Content-Type 
->
->   Value: application/json
+>   Key: Content-Type  Value: application/json
 >
 > - Body:
 >
 >```json
 > {
->	"username": "Nombreusuario",
->	"password": "contrasena123"
+>	"username": "alands212",
+>	"password": "contrasena123",
+>	"sistema_id": "1"
 > }
 >```
 >
-> - Rerturn:
+> - Rerturn: token
 >```json
 > {
->   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiZW1haWwiOiJtYXJ0aW4uZHMuMjEyQGdtYWlsLmNvbSIsImV4cCI6MTYwNjQ4MDY0Niwic3ViIjoiNzE0OTg0OWItOTc0My00MGJjLWFmYTItMTUzMzhlNzBlODkyIiwidXNlcm5hbWUiOiJOb21icmV1c3VhcmlvIn0.cQ6OpjSEP56Jq8TxZJFD9FWARHim_EVxMVFyx7REZBo"
+>    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDY2NTUwNjUsImlkIjoiMSJ9.lIXRoxQGpywGeyp7r98aSrjPIGmQ22utaH2-aeK9X0o"
 > }
 >```
 >
 
-#### Movies
+
+
+#### Permiso acceso
 
 >
-> - GET
+> - POST
 >
-> - Url: /movies
+> - Url: /users/login
 >
-> - Rerturn:
+> - Headers:
+>
+>   Key: Authorization  Value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDY2NTUwNjUsImlkIjoiMSJ9.lIXRoxQGpywGeyp7r98aSrjPIGmQ22utaH2-aeK9X0o
+>
+>   Key: Content-Type  Value: application/json
+>
+> - Body:
 >
 >```json
->[
->    {
->        "id": "tt0468569",
->        "title": "The Dark Knight",
->        "cast": "Christian Bale",
->        "release_date": "2008-08-13",
->        "genre": "Acción,Drama",
->        "director": "Christopher Nolan"
->    },
->    {
->        "id": "tt4154796",
->        "title": "Avengers: Endgame",
->        "cast": "Robert Downey Jr, Chris Evans, Mark Ruffalo, Chris Hemsworth, Scarlett Johansson, etc.",
->        "release_date": "2019-04-25",
->        "genre": "Superhéroes, Acción, Ciencia ficción",
->        "director": "Anthony y Joe Russo"
->    }
->]
+> {
+>	"sistema_id": "1",
+>	"permiso_slug": "permiso.index"
+> }
 >```
 >
-
-
+> - Rerturn: (true o false)
+>```json
+> {
+>    "acceso": "true"
+> }
+>```
+>
 
 #### Token contenido
 
 >
->	claims["admin"] = true
+>	claims["exp"]
 >
->	claims["username"] = user
->
->	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
->
->	claims["sub"] = id
->
->	claims["email"] = "martin.ds.212@gmail.com"
+>	claims["id"]
 >

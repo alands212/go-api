@@ -15,7 +15,6 @@ func main() {
 
 	internal.SetErrorHandler(app)
 	app.Use(middleware.Recover())
-	api.SetupMoviesRoutes(app, key)
 	api.SetupUsersRoutes(app, key)
 
 	_ = app.Listen("3993")
