@@ -1,0 +1,47 @@
+version: "3.3"
+services:
+  loginservicesgo:
+    build:
+      context: . #directorio actual
+      dockerfile: Dockerfile #use el dockerfile llamado Dockerfile
+    ports:
+      - "3993:3993" #reenviar el puerto de mi aplicación al sistema operativo LOCAL
+#      - "443:443"  #PRODUCCION TLS
+    networks:
+      - backend
+    restart: always
+
+  mariadb:
+    image: mariadb
+    restart: always
+    ports:
+     - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - backend
+    volumes:
+      - my-datavolume:/var/lib/mysql
+
+  phpmyadmin:
+    depends_on:
+     - mariadb
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+     - '8081:80'
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - backend
+
+volumes:
+  my-datavolume:
+
+networks:
+  backend: #nombre de la red
+    driver: bridge #si la red se crea en este docker-compose
+#    external: true #si la red se toma de otro docker-compose

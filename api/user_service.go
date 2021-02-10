@@ -10,17 +10,17 @@ import (
 )
 
 type CreateUserCMD struct {
-	User          string `json:"user"`
-	Apellido      string `json:"apellido"`
-	Nombre        string `json:"nombre"`
-	Cuit          string `json:"cuit"`
-	Dni           string `json:"dni"`
-	Nrotramitedni string `json:"nrotramitedni"`
-	Password      string `json:"password"`
-	Created_at    string `json:"created_at"`
-	Updated_at    string `json:"updated_at"`
-	Activo        string `json:"activo"`
-	SistemaId     string `json:"sistema_id"`
+	User       string `json:"user"`
+	Apellido   string `json:"apellido"`
+	Nombre     string `json:"nombre"`
+	Cuit       string `json:"cuit"`
+	Dni        string `json:"dni"`
+	Tramite    string `json:"tramite"`
+	Password   string `json:"password"`
+	Created_at string `json:"created_at"`
+	Updated_at string `json:"updated_at"`
+	Activo     string `json:"activo"`
+	SistemaId  string `json:"sistema_id"`
 }
 
 type UserSummary struct {
@@ -30,9 +30,9 @@ type UserSummary struct {
 
 type UserGateway interface {
 	SaveUser(cmd CreateUserCMD) (*UserSummary, error)
-	Login(cmd LoginCMD) (string, string)
+	Login(cmd LoginCMD) (string, string, string)
+	GetAccess(userID, sistemaID string) ([]string, []string)
 	GetPermiso(userID, sistemaID, permisoSlug string) string
-	Savetoken(t, usersistemaid string) error
 }
 
 type UserService struct {
@@ -59,7 +59,7 @@ func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
 		t.Hour(), t.Minute(), t.Second())
 
 	/* Crear usuario */
-	_, err := us.Exec(CreateUserQuery(), cmd.User, cmd.Apellido, cmd.Nombre, cmd.Cuit, cmd.Dni, cmd.Nrotramitedni, password, fecha, fecha, 1)
+	_, err := us.Exec(CreateUserQuery(), cmd.User, cmd.Apellido, cmd.Nombre, cmd.Cuit, cmd.Dni, cmd.Tramite, password, fecha, fecha, 1)
 
 	if err != nil {
 
@@ -71,9 +71,10 @@ func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
 	/* Login usuario nuevo */
 
 	var id string
+	var user string
 
 	/* Buscando al usuario */
-	_ = us.QueryRow(GetLoginQuery(), cmd.User).Scan(&id, &password)
+	_ = us.QueryRow(GetLoginQuery(), cmd.User).Scan(&id, &password, &user)
 
 	/* Asignar a sistema */
 	_, erro := us.Exec(SaveUsersSistema(), id, cmd.SistemaId, fecha, fecha)
@@ -95,19 +96,20 @@ func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
 	}, nil
 }
 
-func (us *UserService) Login(cmd LoginCMD) (string, string) {
+func (us *UserService) Login(cmd LoginCMD) (string, string, string) {
 
 	var id string
 	var password string
+	var user string
 
 	/* Buscando al usuario */
-	err := us.QueryRow(GetLoginQuery(), cmd.Username).Scan(&id, &password)
+	err := us.QueryRow(GetLoginQuery(), cmd.Username).Scan(&id, &password, &user)
 
 	if err != nil {
 
 		logs.Error(err.Error())
 
-		return "", ""
+		return "", "", ""
 	}
 
 	/* Busacando al usuario en algun sistema */
@@ -119,7 +121,7 @@ func (us *UserService) Login(cmd LoginCMD) (string, string) {
 
 		logs.Error(usersistema.Error())
 
-		return "", ""
+		return "", "", ""
 	}
 
 	/* comparar contraseña */
@@ -132,10 +134,10 @@ func (us *UserService) Login(cmd LoginCMD) (string, string) {
 	error := bcrypt.CompareHashAndPassword(hashComoByte, contraseñaComoByte)
 	if error != nil {
 		logs.Error("Contraseña incorrecta")
-		return "", ""
+		return "", "", ""
 	}
 
-	return id, usersistemaid
+	return id, cmd.SistemaId, user
 
 }
 
@@ -153,20 +155,66 @@ func (us *UserService) GetPermiso(userID, sistemaID, permisoSlug string) string 
 
 }
 
-func (us *UserService) Savetoken(t, usersistemaid string) error {
+func (us *UserService) GetAccess(userID, sistemaID string) ([]string, []string) {
 
-	/* fecha */
-	ahora := time.Now()
-	fecha := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
-		ahora.Year(), ahora.Month(), ahora.Day(),
-		ahora.Hour(), ahora.Minute(), ahora.Second())
+	var rol string
+	var rolid string
+	var permiso string
 
-	_, err := us.Exec(SavetokenQuery(), t, fecha, usersistemaid)
+	res, err := us.Query(GetAccessQuery(), userID, sistemaID)
 
 	if err != nil {
-		return err
+		logs.Error(err)
 	}
 
-	return nil
+	defer res.Close()
 
+	var acceso []string
+	var perm []string
+
+	for res.Next() {
+		err := res.Scan(&rolid, &rol)
+		if err != nil {
+			logs.Error(err)
+		}
+
+		resperm, err := us.Query(GetPermisosQuery(), userID, sistemaID, rolid)
+
+		defer resperm.Close()
+
+		for resperm.Next() {
+
+			err := resperm.Scan(&permiso)
+			if err != nil {
+				logs.Error(err)
+			}
+
+			perm = append(perm, permiso)
+
+		}
+
+		acceso = append(acceso, rol)
+
+	}
+
+	permisos := unique(perm)
+
+	if err := res.Err(); err != nil {
+		logs.Error(err)
+	}
+
+	return acceso, permisos
+
+}
+
+func unique(intSlice []string) []string {
+	keys := make(map[string]bool)
+	list := []string{}
+	for _, entry := range intSlice {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
 }

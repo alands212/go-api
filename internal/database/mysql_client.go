@@ -2,8 +2,9 @@ package database
 
 import (
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/alands212/go-api/internal/logs"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type MySqlClient struct {
@@ -11,7 +12,7 @@ type MySqlClient struct {
 }
 
 func NewMySQLClient() *MySqlClient {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/loginserve")
+	db, err := sql.Open("mysql", "root:root@tcp(mariadb:3306)/mydb")
 
 	if err != nil {
 		logs.Error("cannot create mysql client")

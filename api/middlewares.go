@@ -15,7 +15,7 @@ func jwtMiddleware(secret string) fiber.Handler {
 	})
 }
 
-func signToken(tokenKey, id string) string {
+func signToken(tokenKey, id, user string, accesos []string, permisos []string) string {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -24,6 +24,9 @@ func signToken(tokenKey, id string) string {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	claims["id"] = id
+	claims["user"] = user
+	claims["roles"] = accesos
+	claims["permisos"] = permisos
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(tokenKey))

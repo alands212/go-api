@@ -7,6 +7,8 @@ import (
 func (w *WebServices) CreateUserHandler(c *fiber.Ctx) error {
 
 	var cmd CreateUserCMD
+	var accesos []string
+	var permisos []string
 
 	err := c.BodyParser(&cmd)
 
@@ -15,13 +17,10 @@ func (w *WebServices) CreateUserHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(400, "cannot create user")
 	}
-	t := signToken(w.tokenKey, res.ID)
 
-	savetoken := w.Services.users.Savetoken(t, res.UserSistema)
+	accesos, permisos = w.users.GetAccess(res.ID, res.UserSistema)
 
-	if savetoken != nil {
-		return fiber.NewError(404, "user not found")
-	}
+	t := signToken(w.tokenKey, res.ID, cmd.User, accesos, permisos)
 
 	return c.JSON(struct {
 		Token string `json:"token"`
@@ -52,6 +51,8 @@ func (w *WebServices) PermisoHandler(c *fiber.Ctx) error {
 func (w *WebServices) LoginHandler(c *fiber.Ctx) error {
 
 	var cmd LoginCMD
+	var accesos []string
+	var permisos []string
 
 	err := c.BodyParser(&cmd)
 
@@ -59,19 +60,15 @@ func (w *WebServices) LoginHandler(c *fiber.Ctx) error {
 		return fiber.NewError(400, "cannot parse params")
 	}
 
-	id, usersistema := w.users.Login(cmd)
+	id, sistemaid, user := w.users.Login(cmd)
+
+	accesos, permisos = w.users.GetAccess(id, sistemaid)
 
 	if id == "" {
 		return fiber.NewError(404, "user not found")
 	}
 
-	t := signToken(w.tokenKey, id)
-
-	savetoken := w.users.Savetoken(t, usersistema)
-
-	if savetoken != nil {
-		return fiber.NewError(404, "user not found")
-	}
+	t := signToken(w.tokenKey, id, user, accesos, permisos)
 
 	return c.JSON(struct {
 		Token string `json:"token"`

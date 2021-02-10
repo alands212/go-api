@@ -49,7 +49,7 @@
 >	"nombre": "Facundo",
 >	"cuit": "20213243129",
 >	"dni": "21324312",
->	"nrotramitedni": "1231152224312456789",
+>	"tramite": "1231152224312456789",
 >	"password": "contrasena123",
 >	"sistema_id": "1"
 > }
@@ -132,3 +132,40 @@
 >
 >	claims["id"]
 >
+
+*************************
+
+## TLS
+
+Para ejecutar api en produccion con TLS descomentar las lineas correspondientes en [main.go](https://github.com/Corrientes-Telecomunicaciones/loginservice/blob/main/cmd/main/main.go)
+
+Editar en [main.go](https://github.com/Corrientes-Telecomunicaciones/loginservice/blob/main/cmd/main/main.go) **example.com** por el dominio correspondiente
+
+*************************
+
+## Conexion DB
+
+Para cambiar la conexion a la base de datos editar en el archivo [mysql_client.go](https://github.com/Corrientes-Telecomunicaciones/loginservice/blob/main/internal/database/mysql_client.go) 
+
+```
+db, err := sql.Open("mysql", "root:root@tcp(mariadb:3306)/mydb")
+```
+- **root** 1er usuario de la base de datos
+- **root** 2do contraseña de la base de datos
+- **mariadb:3306** direccion ip y puerto de la base de datos
+- **mydb** nombre de la tabla
+
+*************************
+
+## Docker Compose
+
+### Build
+```shell script
+docker-compose build
+```
+
+### Up
+```shell script
+docker-compose up -d
+```
+**-d** para ejecutar el servicios en segundo plano
