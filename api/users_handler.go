@@ -4,6 +4,25 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func (w *WebServices) SaveDniHandler(c *fiber.Ctx) error {
+	var dni CreateDniCMD
+
+	err := c.BodyParser(&dni)
+
+	res, err := w.Services.users.SaveDni(dni)
+
+	if err != nil {
+		return fiber.NewError(400, "cannot save dni")
+	}
+
+	return c.JSON(struct {
+		Dni string `json:"NumeroDni"`
+	}{
+		Dni: res.Numero,
+	})
+
+}
+
 func (w *WebServices) CreateUserHandler(c *fiber.Ctx) error {
 
 	var cmd CreateUserCMD
@@ -42,9 +61,11 @@ func (w *WebServices) PermisoHandler(c *fiber.Ctx) error {
 	msg := w.users.GetPermiso(userID, cmd.SistemaId, cmd.PermisoSlug)
 
 	return c.JSON(struct {
-		R string `json:"acceso"`
+		Acceso string `json:"acceso"`
+		ID     string `json:"user_id"`
 	}{
-		R: msg,
+		Acceso: msg,
+		ID:     userID,
 	})
 }
 

@@ -12,7 +12,7 @@ type MySqlClient struct {
 }
 
 func NewMySQLClient() *MySqlClient {
-	db, err := sql.Open("mysql", "root:root@tcp(mariadb:3306)/mydb")
+	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/loginserve")
 
 	if err != nil {
 		logs.Error("cannot create mysql client")

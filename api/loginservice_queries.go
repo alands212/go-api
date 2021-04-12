@@ -1,5 +1,8 @@
 package api
 
+func CreateDniQuery() string {
+	return "insert into dni (numero, created_at) values (?, ?)"
+}
 func CreateUserQuery() string {
 	return "insert into users (user, apellido, nombre, cuit, dni, tramite, password, created_at, updated_at, activo) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 }
@@ -13,7 +16,7 @@ func GetUsersSistema() string {
 }
 
 func GetPermisoQuery() string {
-	return "select permisos.id from permisos inner join rolspermisos ON rolspermisos.permisos_id=permisos.id inner join userssistemasrols ON userssistemasrols.rols_id=rolspermisos.rols_id inner join userssistemas ON userssistemas.id = userssistemasrols.userssistemas_id where userssistemas.users_id = ? and userssistemas.sistemas_id = ? and permisos.scope = ? and permisos.activo = 1"
+	return "select permisos.id as permisoid from permisos inner join rolspermisos ON rolspermisos.permisos_id=permisos.id inner join userssistemasrols ON userssistemasrols.rols_id=rolspermisos.rols_id inner join userssistemas ON userssistemas.id = userssistemasrols.userssistemas_id where userssistemas.users_id = ? and userssistemas.sistemas_id = ? and permisos.scope = ? and permisos.activo = 1"
 }
 
 func GetAccessQuery() string {

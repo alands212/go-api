@@ -9,6 +9,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type CreateDniCMD struct {
+	Numero string `json:"numero"`
+}
 type CreateUserCMD struct {
 	User       string `json:"user"`
 	Apellido   string `json:"apellido"`
@@ -30,6 +33,7 @@ type UserSummary struct {
 
 type UserGateway interface {
 	SaveUser(cmd CreateUserCMD) (*UserSummary, error)
+	SaveDni(cmd CreateDniCMD) (*CreateDniCMD, error)
 	Login(cmd LoginCMD) (string, string, string)
 	GetAccess(userID, sistemaID string) ([]string, []string)
 	GetPermiso(userID, sistemaID, permisoSlug string) string
@@ -37,6 +41,29 @@ type UserGateway interface {
 
 type UserService struct {
 	*database.MySqlClient
+}
+
+func (us *UserService) SaveDni(cmd CreateDniCMD) (*CreateDniCMD, error) {
+	/* fecha */
+	t := time.Now()
+
+	fecha := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+
+	/* Crear usuario */
+	_, err := us.Exec(CreateDniQuery(), cmd.Numero, fecha)
+
+	if err != nil {
+
+		logs.Error("cannot insert user" + err.Error())
+
+		return nil, err
+	}
+
+	return &CreateDniCMD{
+		Numero: cmd.Numero,
+	}, nil
 }
 
 func (us *UserService) SaveUser(cmd CreateUserCMD) (*UserSummary, error) {
